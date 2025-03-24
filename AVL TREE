@@ -1,0 +1,67 @@
+class Node
+{
+	int val;
+	int ht;
+	Node left,right;
+
+	Node(int val)
+	{
+		this.val = val;
+		ht = 1;
+	}
+}
+
+class AVL
+{
+    int getheight(Node node)
+    {
+        return node == null? 0:node.ht;
+    }
+    int getbal(Node node)
+    
+    
+	Node insert(Node node,int val);
+	{
+		if(node==null)
+			return new Node(val);
+		else if(node.val>val)
+		{
+			node.left = insert(node.left,val);
+		}
+		else if(node.val<val)
+		{
+		    node.right = insert(node.right,val);
+		}
+		else
+		return node;
+		
+		node.ht= Math.max( getheight(node.left),getheight(node.right))+1;
+		int bal = getbal(node);
+		
+		if (bal>1 && val<node.left)
+		Node x=right(Node y);
+		else if(bal<-1 && val>node.right)
+		Node x=left(Node y);
+		else if(bal<-1 && val>node.right)
+		Node x=rightleft(Node y);
+		else if(bal>-1 && val>node.right)
+		Node x=left(Node y);
+	}
+}
+
+public class Main
+{
+	public static void main(String[] args)
+	{
+		AVL t = new AVL();
+		Node root = null;
+		int[] values = {20,30,25,47,67,90,33,89};
+		for(int a:values)
+		{
+			root = insert(root,a);
+		}
+		t.inorder(t.root);
+		t.preorder(t.root);
+		t.postorder(t.root);
+	}
+}
