@@ -1,67 +1,108 @@
-class Node
-{
-	int val;
-	int ht;
-	Node left,right;
+class Node {
+    int val, ht;
+    Node left, right;
 
-	Node(int val)
-	{
-		this.val = val;
-		ht = 1;
-	}
-}
-
-class AVL
-{
-    int getheight(Node node)
-    {
-        return node == null? 0:node.ht;
+    Node(int val) {
+        this.val = val;
+        this.ht = 1;
     }
-    int getbal(Node node)
-    
-    
-	Node insert(Node node,int val);
-	{
-		if(node==null)
-			return new Node(val);
-		else if(node.val>val)
-		{
-			node.left = insert(node.left,val);
-		}
-		else if(node.val<val)
-		{
-		    node.right = insert(node.right,val);
-		}
-		else
-		return node;
-		
-		node.ht= Math.max( getheight(node.left),getheight(node.right))+1;
-		int bal = getbal(node);
-		
-		if (bal>1 && val<node.left)
-		Node x=right(Node y);
-		else if(bal<-1 && val>node.right)
-		Node x=left(Node y);
-		else if(bal<-1 && val>node.right)
-		Node x=rightleft(Node y);
-		else if(bal>-1 && val>node.right)
-		Node x=left(Node y);
-	}
 }
 
-public class Main
-{
-	public static void main(String[] args)
-	{
-		AVL t = new AVL();
-		Node root = null;
-		int[] values = {20,30,25,47,67,90,33,89};
-		for(int a:values)
-		{
-			root = insert(root,a);
-		}
-		t.inorder(t.root);
-		t.preorder(t.root);
-		t.postorder(t.root);
-	}
+class AVL {
+    int getHeight(Node node) {
+        return (node == null) ? 0 : node.ht;
+    }
+
+    int getBalance(Node node) {
+        return (node == null) ? 0 : getHeight(node.left) - getHeight(node.right);
+    }
+
+    Node rightRotate(Node y) {
+        Node x = y.left;
+        Node T2 = x.right;
+
+        x.right = y;
+        y.left = T2;
+
+        y.ht = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+        x.ht = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+
+        return x;
+    }
+
+    Node leftRotate(Node y) {
+        Node x = y.right;
+        Node T2 = x.left;
+
+        x.left = y;
+        y.right = T2;
+
+        y.ht = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+        x.ht = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+
+        return x;
+    }
+
+    Node insert(Node node, int val) {
+        if (node == null) return new Node(val);
+
+        if (val < node.val)
+            node.left = insert(node.left, val);
+        else if (val > node.val)
+            node.right = insert(node.right, val);
+        else 
+            return node; 
+
+        node.ht = Math.max(getHeight(node.left), getHeight(node.right)) + 1;
+
+        int balance = getBalance(node);
+
+        if (balance > 1 && val < node.left.val)
+            return rightRotate(node);
+        if (balance < -1 && val > node.right.val)
+            return leftRotate(node);
+        if (balance > 1 && val > node.left.val) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+        if (balance < -1 && val < node.right.val) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
+    void inorder(Node node) {
+        if (node != null) {
+            inorder(node.left);
+            System.out.print(node.val + " ");
+            inorder(node.right);
+        }
+    }
+
+    void preorder(Node node) {
+        if (node != null) {
+            System.out.print(node.val + " ");
+            preorder(node.left);
+            preorder(node.right);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        AVL tree = new AVL();
+        Node root = null;
+
+        int[] values = {30,20,10,40,25,22};
+        for (int val : values) {
+            root = tree.insert(root, val);
+        }
+
+        System.out.println("Inorder Traversal:");
+        tree.inorder(root);
+        System.out.println("\nPreorder Traversal:");
+        tree.preorder(root);
+    }
 }
